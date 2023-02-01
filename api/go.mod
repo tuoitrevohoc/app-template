@@ -5,13 +5,13 @@ go 1.19
 require (
 	entgo.io/contrib v0.3.5
 	entgo.io/ent v0.11.7
-	github.com/99designs/gqlgen v0.17.5-0.20220428154617-9250f9ac1f90
+	github.com/99designs/gqlgen v0.17.22
 	github.com/go-chi/chi v1.5.4
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/google/wire v0.5.0
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/spf13/viper v1.15.0
-	github.com/vektah/gqlparser/v2 v2.4.3-0.20220508162109-d3d9eb001575
+	github.com/vektah/gqlparser/v2 v2.5.1
 	github.com/vmihailenco/msgpack/v5 v5.0.0-beta.9
 	golang.org/x/sync v0.1.0
 )
@@ -46,6 +46,5 @@ require (
 	golang.org/x/text v0.5.0 // indirect
 	golang.org/x/tools v0.4.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

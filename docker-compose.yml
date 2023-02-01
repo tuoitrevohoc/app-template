@@ -26,5 +26,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
+  www:
+    build: ./www
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - $PWD/config/Caddyfile:/etc/caddy/Caddyfile
 volumes:
   mydb:

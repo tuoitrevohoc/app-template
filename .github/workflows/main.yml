@@ -1,0 +1,23 @@
+name: "Deploy to server"
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - dev
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Docker-compose up
+        uses: Flaavius/ssh-commands@1.0
+        with:
+          command: ~/app/deploy.sh
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
