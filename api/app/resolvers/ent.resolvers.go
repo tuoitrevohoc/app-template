@@ -5,25 +5,23 @@ package resolvers
 
 import (
 	"context"
-	"fmt"
 
-	"github.com/tuoitrevohoc/app-template/api"
 	"github.com/tuoitrevohoc/app-template/api/ent"
 )
 
 func (r *queryResolver) Node(ctx context.Context, id int) (ent.Noder, error) {
-	panic(fmt.Errorf("not implemented"))
+	return r.Client.Noder(ctx, id)
 }
 
 func (r *queryResolver) Nodes(ctx context.Context, ids []int) ([]ent.Noder, error) {
-	panic(fmt.Errorf("not implemented"))
+	return r.Client.Noders(ctx, ids)
 }
 
 func (r *queryResolver) Invoices(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int) (*ent.InvoiceConnection, error) {
-	panic(fmt.Errorf("not implemented"))
+	return r.Client.Invoice.Query().Paginate(ctx, after, first, before, last)
 }
 
-// Query returns api.QueryResolver implementation.
-func (r *Resolver) Query() api.QueryResolver { return &queryResolver{r} }
+// Query returns ent.QueryResolver implementation.
+func (r *Resolver) Query() ent.QueryResolver { return &queryResolver{r} }
 
 type queryResolver struct{ *Resolver }

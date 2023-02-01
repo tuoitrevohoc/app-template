@@ -1,6 +1,11 @@
 # schema tells gqlgen when the GraphQL schema is located.
 schema:
-  - app/schema/**/*.graphql
+  - ./app/schema/**/*.graphql
+
+exec:
+  layout: follow-schema
+  dir: ent
+  package: ent
 
 # resolver reports where the resolver implementations go.
 resolver:

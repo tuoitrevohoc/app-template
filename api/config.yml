@@ -1,0 +1,2 @@
+PORT: 8080
+DB_URL: "app-template:app-template@tcp(localhost:3306)/app-template?parseTime=true"
