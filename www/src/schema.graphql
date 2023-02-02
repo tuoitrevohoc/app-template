@@ -53,6 +53,11 @@ type InvoiceEdge {
   cursor: Cursor!
 }
 
+type Mutation {
+  createInvoice(input: CreateInvoiceInput!): Invoice
+  deleteInvoice(id: Int!): Invoice
+}
+
 """
 An object with an ID.
 Follows the [Relay Global Object Identification Specification](https://relay.dev/graphql/objectidentification.htm)

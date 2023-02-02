@@ -1,0 +1,4 @@
+extend type Mutation {
+  createInvoice(input: CreateInvoiceInput!): Invoice
+  deleteInvoice(id: Int!): Invoice
+}

@@ -1018,7 +1018,12 @@ func (ec *executionContext) unmarshalInputCreateInvoiceInput(ctx context.Context
 		asMap[k] = v
 	}
 
-	for k, v := range asMap {
+	fieldsInOrder := [...]string{"title", "leetCodeLink", "invoicedTo"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
 		switch k {
 		case "title":
 			var err error
@@ -1346,6 +1351,11 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 // endregion **************************** object.gotpl ****************************
 
 // region    ***************************** type.gotpl *****************************
+
+func (ec *executionContext) unmarshalNCreateInvoiceInput2githubᚗcomᚋtuoitrevohocᚋappᚑtemplateᚋapiᚋentᚐCreateInvoiceInput(ctx context.Context, v interface{}) (CreateInvoiceInput, error) {
+	res, err := ec.unmarshalInputCreateInvoiceInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
 
 func (ec *executionContext) unmarshalNCursor2githubᚗcomᚋtuoitrevohocᚋappᚑtemplateᚋapiᚋentᚐCursor(ctx context.Context, v interface{}) (Cursor, error) {
 	var res Cursor
