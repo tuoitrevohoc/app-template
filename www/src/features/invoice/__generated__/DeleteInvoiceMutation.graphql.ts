@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a64e05ad6439d8d50ad2c078b0960e12>>
+ * @generated SignedSource<<922c0749a9f53faaa8d650b36ff5b0ee>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,7 @@
 import { ConcreteRequest, Mutation } from 'relay-runtime';
 export type DeleteInvoiceMutation$variables = {
   connections: ReadonlyArray<string>;
-  id: number;
+  id: string;
 };
 export type DeleteInvoiceMutation$data = {
   readonly deleteInvoice: {
@@ -114,16 +114,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "c99ce096aa7983fb69199dcd4018e039",
+    "cacheID": "6b78eb63287d0163a6f9eca39ea84548",
     "id": null,
     "metadata": {},
     "name": "DeleteInvoiceMutation",
     "operationKind": "mutation",
-    "text": "mutation DeleteInvoiceMutation(\n  $id: Int!\n) {\n  deleteInvoice(id: $id) {\n    id\n  }\n}\n"
+    "text": "mutation DeleteInvoiceMutation(\n  $id: ID!\n) {\n  deleteInvoice(id: $id) {\n    id\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "74a6bac509135cfcb083a280c77e698f";
+(node as any).hash = "82b889025e0fcce25098a32646f94111";
 
 export default node;

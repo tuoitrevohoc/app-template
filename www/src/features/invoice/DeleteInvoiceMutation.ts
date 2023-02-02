@@ -3,7 +3,7 @@ import { DeleteInvoiceMutation } from "./__generated__/DeleteInvoiceMutation.gra
 
 export default function useDeleteInvoiceMutation() {
   return useMutation<DeleteInvoiceMutation>(graphql`
-    mutation DeleteInvoiceMutation($id: Int!, $connections: [ID!]!) {
+    mutation DeleteInvoiceMutation($id: ID!, $connections: [ID!]!) {
       deleteInvoice(id: $id) {
         id @deleteEdge(connections: $connections)
       }

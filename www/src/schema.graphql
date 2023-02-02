@@ -55,7 +55,7 @@ type InvoiceEdge {
 
 type Mutation {
   createInvoice(input: CreateInvoiceInput!): Invoice
-  deleteInvoice(id: Int!): Invoice
+  deleteInvoice(id: ID!): Invoice
 }
 
 """

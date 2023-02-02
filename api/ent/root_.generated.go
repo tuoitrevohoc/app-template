@@ -404,7 +404,7 @@ type Query {
 `, BuiltIn: false},
 	{Name: "../app/schema/invoice.graphql", Input: `extend type Mutation {
   createInvoice(input: CreateInvoiceInput!): Invoice
-  deleteInvoice(id: Int!): Invoice
+  deleteInvoice(id: ID!): Invoice
 }
 `, BuiltIn: false},
 }
