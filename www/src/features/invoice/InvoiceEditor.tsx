@@ -51,8 +51,8 @@ export default function InvoiceEditor(props: Props) {
           type="text"
           fullWidth
           variant="outlined"
-          value={leetCodeLink}
-          onChange={(event) => setLeetCodeLink(event.target.value)}
+          value={title}
+          onChange={(event) => setTitle(event.target.value)}
         />
         <TextField
           autoFocus
@@ -62,8 +62,8 @@ export default function InvoiceEditor(props: Props) {
           type="text"
           fullWidth
           variant="outlined"
-          value={title}
-          onChange={(event) => setTitle(event.target.value)}
+          value={leetCodeLink}
+          onChange={(event) => setLeetCodeLink(event.target.value)}
         />
         <TextField
           autoFocus
