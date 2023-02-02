@@ -5,3 +5,11 @@
 docker compose up
 
 Go to http://localhost
+
+## GraphQL Playground
+
+http://localhost/graphql
+
+## How to fetch data:
+
+See Home.tsx
