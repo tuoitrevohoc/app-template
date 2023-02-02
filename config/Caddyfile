@@ -1,4 +1,8 @@
 app-template.8doc.xyz, localhost {
+    handle_path /graphql {
+        rewrite * /graphql
+        reverse_proxy api:8080
+    }
     handle_path /graphql/* {
         rewrite * /graphql{uri}
         reverse_proxy api:8080
