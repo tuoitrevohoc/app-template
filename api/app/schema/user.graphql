@@ -1,0 +1,11 @@
+extend type Mutation {
+  """
+  Login with username and password
+  """
+  login(username: String!, password: String!): User
+
+  """
+  Register with username and password
+  """
+  register(username: String!, password: String!): User
+}

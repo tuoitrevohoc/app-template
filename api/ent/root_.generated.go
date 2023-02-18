@@ -58,6 +58,8 @@ type ComplexityRoot struct {
 	Mutation struct {
 		CreateInvoice func(childComplexity int, input CreateInvoiceInput) int
 		DeleteInvoice func(childComplexity int, id int) int
+		Login         func(childComplexity int, username string, password string) int
+		Register      func(childComplexity int, username string, password string) int
 	}
 
 	PageInfo struct {
@@ -67,10 +69,67 @@ type ComplexityRoot struct {
 		StartCursor     func(childComplexity int) int
 	}
 
+	Permission struct {
+		Description func(childComplexity int) int
+		ID          func(childComplexity int) int
+		Name        func(childComplexity int) int
+		Roles       func(childComplexity int) int
+	}
+
+	PermissionConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	PermissionEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
 	Query struct {
-		Invoices func(childComplexity int, after *Cursor, first *int, before *Cursor, last *int) int
-		Node     func(childComplexity int, id int) int
-		Nodes    func(childComplexity int, ids []int) int
+		Invoices    func(childComplexity int, after *Cursor, first *int, before *Cursor, last *int) int
+		Node        func(childComplexity int, id int) int
+		Nodes       func(childComplexity int, ids []int) int
+		Permissions func(childComplexity int, after *Cursor, first *int, before *Cursor, last *int) int
+		Roles       func(childComplexity int, after *Cursor, first *int, before *Cursor, last *int) int
+		Users       func(childComplexity int, after *Cursor, first *int, before *Cursor, last *int) int
+	}
+
+	Role struct {
+		Description func(childComplexity int) int
+		ID          func(childComplexity int) int
+		Name        func(childComplexity int) int
+		Permissions func(childComplexity int) int
+		Users       func(childComplexity int) int
+	}
+
+	RoleConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	RoleEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
+	}
+
+	User struct {
+		ID       func(childComplexity int) int
+		Role     func(childComplexity int) int
+		Username func(childComplexity int) int
+	}
+
+	UserConnection struct {
+		Edges      func(childComplexity int) int
+		PageInfo   func(childComplexity int) int
+		TotalCount func(childComplexity int) int
+	}
+
+	UserEdge struct {
+		Cursor func(childComplexity int) int
+		Node   func(childComplexity int) int
 	}
 }
 
@@ -176,6 +235,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteInvoice(childComplexity, args["id"].(int)), true
 
+	case "Mutation.login":
+		if e.complexity.Mutation.Login == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_login_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.Login(childComplexity, args["username"].(string), args["password"].(string)), true
+
+	case "Mutation.register":
+		if e.complexity.Mutation.Register == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_register_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.Register(childComplexity, args["username"].(string), args["password"].(string)), true
+
 	case "PageInfo.endCursor":
 		if e.complexity.PageInfo.EndCursor == nil {
 			break
@@ -203,6 +286,69 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.PageInfo.StartCursor(childComplexity), true
+
+	case "Permission.description":
+		if e.complexity.Permission.Description == nil {
+			break
+		}
+
+		return e.complexity.Permission.Description(childComplexity), true
+
+	case "Permission.id":
+		if e.complexity.Permission.ID == nil {
+			break
+		}
+
+		return e.complexity.Permission.ID(childComplexity), true
+
+	case "Permission.name":
+		if e.complexity.Permission.Name == nil {
+			break
+		}
+
+		return e.complexity.Permission.Name(childComplexity), true
+
+	case "Permission.roles":
+		if e.complexity.Permission.Roles == nil {
+			break
+		}
+
+		return e.complexity.Permission.Roles(childComplexity), true
+
+	case "PermissionConnection.edges":
+		if e.complexity.PermissionConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.PermissionConnection.Edges(childComplexity), true
+
+	case "PermissionConnection.pageInfo":
+		if e.complexity.PermissionConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.PermissionConnection.PageInfo(childComplexity), true
+
+	case "PermissionConnection.totalCount":
+		if e.complexity.PermissionConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.PermissionConnection.TotalCount(childComplexity), true
+
+	case "PermissionEdge.cursor":
+		if e.complexity.PermissionEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.PermissionEdge.Cursor(childComplexity), true
+
+	case "PermissionEdge.node":
+		if e.complexity.PermissionEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.PermissionEdge.Node(childComplexity), true
 
 	case "Query.invoices":
 		if e.complexity.Query.Invoices == nil {
@@ -240,6 +386,168 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Nodes(childComplexity, args["ids"].([]int)), true
 
+	case "Query.permissions":
+		if e.complexity.Query.Permissions == nil {
+			break
+		}
+
+		args, err := ec.field_Query_permissions_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Permissions(childComplexity, args["after"].(*Cursor), args["first"].(*int), args["before"].(*Cursor), args["last"].(*int)), true
+
+	case "Query.roles":
+		if e.complexity.Query.Roles == nil {
+			break
+		}
+
+		args, err := ec.field_Query_roles_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Roles(childComplexity, args["after"].(*Cursor), args["first"].(*int), args["before"].(*Cursor), args["last"].(*int)), true
+
+	case "Query.users":
+		if e.complexity.Query.Users == nil {
+			break
+		}
+
+		args, err := ec.field_Query_users_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Users(childComplexity, args["after"].(*Cursor), args["first"].(*int), args["before"].(*Cursor), args["last"].(*int)), true
+
+	case "Role.description":
+		if e.complexity.Role.Description == nil {
+			break
+		}
+
+		return e.complexity.Role.Description(childComplexity), true
+
+	case "Role.id":
+		if e.complexity.Role.ID == nil {
+			break
+		}
+
+		return e.complexity.Role.ID(childComplexity), true
+
+	case "Role.name":
+		if e.complexity.Role.Name == nil {
+			break
+		}
+
+		return e.complexity.Role.Name(childComplexity), true
+
+	case "Role.permissions":
+		if e.complexity.Role.Permissions == nil {
+			break
+		}
+
+		return e.complexity.Role.Permissions(childComplexity), true
+
+	case "Role.users":
+		if e.complexity.Role.Users == nil {
+			break
+		}
+
+		return e.complexity.Role.Users(childComplexity), true
+
+	case "RoleConnection.edges":
+		if e.complexity.RoleConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.RoleConnection.Edges(childComplexity), true
+
+	case "RoleConnection.pageInfo":
+		if e.complexity.RoleConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.RoleConnection.PageInfo(childComplexity), true
+
+	case "RoleConnection.totalCount":
+		if e.complexity.RoleConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.RoleConnection.TotalCount(childComplexity), true
+
+	case "RoleEdge.cursor":
+		if e.complexity.RoleEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.RoleEdge.Cursor(childComplexity), true
+
+	case "RoleEdge.node":
+		if e.complexity.RoleEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.RoleEdge.Node(childComplexity), true
+
+	case "User.id":
+		if e.complexity.User.ID == nil {
+			break
+		}
+
+		return e.complexity.User.ID(childComplexity), true
+
+	case "User.role":
+		if e.complexity.User.Role == nil {
+			break
+		}
+
+		return e.complexity.User.Role(childComplexity), true
+
+	case "User.username":
+		if e.complexity.User.Username == nil {
+			break
+		}
+
+		return e.complexity.User.Username(childComplexity), true
+
+	case "UserConnection.edges":
+		if e.complexity.UserConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.UserConnection.Edges(childComplexity), true
+
+	case "UserConnection.pageInfo":
+		if e.complexity.UserConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.UserConnection.PageInfo(childComplexity), true
+
+	case "UserConnection.totalCount":
+		if e.complexity.UserConnection.TotalCount == nil {
+			break
+		}
+
+		return e.complexity.UserConnection.TotalCount(childComplexity), true
+
+	case "UserEdge.cursor":
+		if e.complexity.UserEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.UserEdge.Cursor(childComplexity), true
+
+	case "UserEdge.node":
+		if e.complexity.UserEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.UserEdge.Node(childComplexity), true
+
 	}
 	return 0, false
 }
@@ -249,6 +557,9 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	ec := executionContext{rc, e}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
 		ec.unmarshalInputCreateInvoiceInput,
+		ec.unmarshalInputCreatePermissionInput,
+		ec.unmarshalInputCreateRoleInput,
+		ec.unmarshalInputCreateUserInput,
 	)
 	first := true
 
@@ -321,6 +632,38 @@ input CreateInvoiceInput {
   invoicedTo: String!
 }
 """
+CreatePermissionInput is used for create Permission object.
+Input was generated by ent.
+"""
+input CreatePermissionInput {
+  """Name of the permission"""
+  name: String!
+  description: String!
+  roleIDs: [ID!]
+}
+"""
+CreateRoleInput is used for create Role object.
+Input was generated by ent.
+"""
+input CreateRoleInput {
+  """Name of the role"""
+  name: String!
+  description: String!
+  userIDs: [ID!]
+  permissionIDs: [ID!]
+}
+"""
+CreateUserInput is used for create User object.
+Input was generated by ent.
+"""
+input CreateUserInput {
+  """The username"""
+  username: String!
+  """Hashed password"""
+  password: String!
+  roleID: ID
+}
+"""
 Define a Relay Cursor type:
 https://relay.dev/graphql/connections.htm#sec-Cursor
 """
@@ -376,6 +719,29 @@ type PageInfo {
   """When paginating forwards, the cursor to continue."""
   endCursor: Cursor
 }
+type Permission implements Node {
+  id: ID!
+  """Name of the permission"""
+  name: String!
+  description: String!
+  roles: [Role!]
+}
+"""A connection to a list of items."""
+type PermissionConnection {
+  """A list of edges."""
+  edges: [PermissionEdge]
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+"""An edge in a connection."""
+type PermissionEdge {
+  """The item at the end of the edge."""
+  node: Permission
+  """A cursor for use in pagination."""
+  cursor: Cursor!
+}
 type Query {
   """Fetches an object given its ID."""
   node(
@@ -400,11 +766,108 @@ type Query {
     """Returns the last _n_ elements from the list."""
     last: Int
   ): InvoiceConnection!
+  permissions(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: Cursor
+
+    """Returns the first _n_ elements from the list."""
+    first: Int
+
+    """Returns the elements in the list that come before the specified cursor."""
+    before: Cursor
+
+    """Returns the last _n_ elements from the list."""
+    last: Int
+  ): PermissionConnection!
+  roles(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: Cursor
+
+    """Returns the first _n_ elements from the list."""
+    first: Int
+
+    """Returns the elements in the list that come before the specified cursor."""
+    before: Cursor
+
+    """Returns the last _n_ elements from the list."""
+    last: Int
+  ): RoleConnection!
+  users(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: Cursor
+
+    """Returns the first _n_ elements from the list."""
+    first: Int
+
+    """Returns the elements in the list that come before the specified cursor."""
+    before: Cursor
+
+    """Returns the last _n_ elements from the list."""
+    last: Int
+  ): UserConnection!
+}
+type Role implements Node {
+  id: ID!
+  """Name of the role"""
+  name: String!
+  description: String!
+  users: [User!]
+  permissions: [Permission!]
+}
+"""A connection to a list of items."""
+type RoleConnection {
+  """A list of edges."""
+  edges: [RoleEdge]
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+"""An edge in a connection."""
+type RoleEdge {
+  """The item at the end of the edge."""
+  node: Role
+  """A cursor for use in pagination."""
+  cursor: Cursor!
+}
+type User implements Node {
+  id: ID!
+  """The username"""
+  username: String!
+  role: Role
+}
+"""A connection to a list of items."""
+type UserConnection {
+  """A list of edges."""
+  edges: [UserEdge]
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+"""An edge in a connection."""
+type UserEdge {
+  """The item at the end of the edge."""
+  node: User
+  """A cursor for use in pagination."""
+  cursor: Cursor!
 }
 `, BuiltIn: false},
 	{Name: "../app/schema/invoice.graphql", Input: `extend type Mutation {
   createInvoice(input: CreateInvoiceInput!): Invoice
   deleteInvoice(id: ID!): Invoice
+}
+`, BuiltIn: false},
+	{Name: "../app/schema/user.graphql", Input: `extend type Mutation {
+  """
+  Login with username and password
+  """
+  login(username: String!, password: String!): User
+
+  """
+  Register with username and password
+  """
+  register(username: String!, password: String!): User
 }
 `, BuiltIn: false},
 }

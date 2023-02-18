@@ -25,6 +25,21 @@ func (r *queryResolver) Invoices(ctx context.Context, after *ent.Cursor, first *
 	return r.Client.Invoice.Query().Paginate(ctx, after, first, before, last)
 }
 
+// Permissions is the resolver for the permissions field.
+func (r *queryResolver) Permissions(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int) (*ent.PermissionConnection, error) {
+	return r.Client.Permission.Query().Paginate(ctx, after, first, before, last)
+}
+
+// Roles is the resolver for the roles field.
+func (r *queryResolver) Roles(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int) (*ent.RoleConnection, error) {
+	return r.Client.Role.Query().Paginate(ctx, after, first, before, last)
+}
+
+// Users is the resolver for the users field.
+func (r *queryResolver) Users(ctx context.Context, after *ent.Cursor, first *int, before *ent.Cursor, last *int) (*ent.UserConnection, error) {
+	return r.Client.User.Query().Paginate(ctx, after, first, before, last)
+}
+
 // Query returns ent.QueryResolver implementation.
 func (r *Resolver) Query() ent.QueryResolver { return &queryResolver{r} }
 
