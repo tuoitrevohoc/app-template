@@ -1,6 +1,6 @@
 // ==============================|| OVERRIDES - LINER PROGRESS ||============================== //
 
-export default function LinearProgress() {
+export default function CustomLinearProgress() {
   return {
     MuiLinearProgress: {
       styleOverrides: {

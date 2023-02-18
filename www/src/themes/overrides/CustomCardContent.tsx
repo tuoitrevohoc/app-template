@@ -1,6 +1,6 @@
 // ==============================|| OVERRIDES - CARD CONTENT ||============================== //
 
-export default function CardContent() {
+export default function CustomCardContent() {
   return {
     MuiCardContent: {
       styleOverrides: {

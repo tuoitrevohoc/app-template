@@ -2,7 +2,7 @@
 
 import { Theme } from "@mui/material";
 
-export default function Tab(theme: Theme) {
+export default function CustomTab(theme: Theme) {
   return {
     MuiTab: {
       styleOverrides: {

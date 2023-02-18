@@ -2,7 +2,7 @@
 
 import { Theme } from "@mui/material";
 
-export default function IconButton(theme: Theme) {
+export default function CustomIconButton(theme: Theme) {
   return {
     MuiIconButton: {
       styleOverrides: {

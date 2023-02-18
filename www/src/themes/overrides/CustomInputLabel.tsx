@@ -2,7 +2,7 @@
 
 import { Theme } from "@mui/material";
 
-export default function InputLabel(theme: Theme) {
+export default function CustomInputLabel(theme: Theme) {
   return {
     MuiInputLabel: {
       styleOverrides: {

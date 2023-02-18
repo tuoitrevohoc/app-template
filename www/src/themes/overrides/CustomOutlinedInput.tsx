@@ -3,7 +3,7 @@ import { alpha, Theme } from "@mui/material/styles";
 
 // ==============================|| OVERRIDES - OUTLINED INPUT ||============================== //
 
-export default function OutlinedInput(theme: Theme) {
+export default function CustomOutlinedInput(theme: Theme) {
   return {
     MuiOutlinedInput: {
       styleOverrides: {

@@ -1,6 +1,6 @@
 // ==============================|| OVERRIDES - LIST ITEM ICON ||============================== //
 
-export default function ListItemIcon() {
+export default function CustomListItemIcon() {
   return {
     MuiListItemIcon: {
       styleOverrides: {

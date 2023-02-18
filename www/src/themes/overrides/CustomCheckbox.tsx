@@ -2,7 +2,7 @@
 
 import { Theme } from "@mui/material";
 
-export default function Checkbox(theme: Theme) {
+export default function CustomCheckbox(theme: Theme) {
   return {
     MuiCheckbox: {
       styleOverrides: {

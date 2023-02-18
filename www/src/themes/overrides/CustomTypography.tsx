@@ -1,6 +1,6 @@
 // ==============================|| OVERRIDES - TYPOGRAPHY ||============================== //
 
-export default function Typography() {
+export default function CustomTypography() {
   return {
     MuiTypography: {
       styleOverrides: {

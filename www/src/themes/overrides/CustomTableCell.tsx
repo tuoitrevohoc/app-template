@@ -2,7 +2,7 @@
 
 import { Theme } from "@mui/material";
 
-export default function TableCell(theme: Theme) {
+export default function CustomTableCell(theme: Theme) {
   return {
     MuiTableCell: {
       styleOverrides: {

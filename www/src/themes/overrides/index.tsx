@@ -3,40 +3,40 @@ import { Theme } from "@mui/material";
 import { merge } from "lodash";
 
 // project import
-import Badge from "./Badge";
-import Button from "./Button";
-import CardContent from "./CardContent";
-import Checkbox from "./Checkbox";
-import Chip from "./Chip";
-import IconButton from "./IconButton";
-import InputLabel from "./InputLabel";
-import LinearProgress from "./LinearProgress";
-import Link from "./Link";
-import ListItemIcon from "./ListItemIcon";
-import OutlinedInput from "./OutlinedInput";
-import Tab from "./Tab";
-import TableCell from "./TableCell";
-import Tabs from "./Tabs";
-import Typography from "./Typography";
+import CustomBadge from "./CustomBadge";
+import CustomButton from "./CustomButton";
+import CustomCardContent from "./CustomCardContent";
+import Checkbox from "./CustomCheckbox";
+import CustomChip from "./CustomChip";
+import CustomIconButton from "./CustomIconButton";
+import CustomInputLabel from "./CustomInputLabel";
+import CustomLinearProgress from "./CustomLinearProgress";
+import CustomLink from "./CustomLink";
+import CustomListItemIcon from "./CustomListItemIcon";
+import CustomOutlinedInput from "./CustomOutlinedInput";
+import CustomTab from "./CustomTab";
+import CustomTableCell from "./CustomTableCell";
+import CustomTabs from "./CustomTabs";
+import CustomTypography from "./CustomTypography";
 
 // ==============================|| OVERRIDES - MAIN ||============================== //
 
 export default function ComponentsOverrides(theme: Theme) {
   return merge(
-    Button(theme),
-    Badge(theme),
-    CardContent(),
+    CustomButton(theme),
+    CustomBadge(theme),
+    CustomCardContent(),
     Checkbox(theme),
-    Chip(theme),
-    IconButton(theme),
-    InputLabel(theme),
-    LinearProgress(),
-    Link(),
-    ListItemIcon(),
-    OutlinedInput(theme),
-    Tab(theme),
-    TableCell(theme),
-    Tabs(),
-    Typography()
+    CustomChip(theme),
+    CustomIconButton(theme),
+    CustomInputLabel(theme),
+    CustomLinearProgress(),
+    CustomLink(),
+    CustomListItemIcon(),
+    CustomOutlinedInput(theme),
+    CustomTab(theme),
+    CustomTableCell(theme),
+    CustomTabs(),
+    CustomTypography()
   );
 }

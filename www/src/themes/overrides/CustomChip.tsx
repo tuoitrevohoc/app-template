@@ -2,7 +2,7 @@
 
 import { Theme } from "@mui/material";
 
-export default function Chip(theme: Theme) {
+export default function CustomChip(theme: Theme) {
   return {
     MuiChip: {
       styleOverrides: {

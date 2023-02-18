@@ -1,6 +1,6 @@
 // ==============================|| OVERRIDES - TABS ||============================== //
 
-export default function Tabs() {
+export default function CustomTabs() {
   return {
     MuiTabs: {
       styleOverrides: {

@@ -1,6 +1,6 @@
 // ==============================|| OVERRIDES - LINK ||============================== //
 
-export default function Link() {
+export default function CustomLink() {
   return {
     MuiLink: {
       defaultProps: {
