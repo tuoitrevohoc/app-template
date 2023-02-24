@@ -8,15 +8,21 @@ import (
 	"context"
 
 	"github.com/tuoitrevohoc/app-template/api/ent"
+	"github.com/tuoitrevohoc/app-template/api/pkg/logger"
+	"go.uber.org/zap"
 )
 
 // Node is the resolver for the node field.
 func (r *queryResolver) Node(ctx context.Context, id int) (ent.Noder, error) {
+	log := logger.ForContext(ctx)
+	log.Info("Resolving Node", zap.Int("nodeID", id))
 	return r.Client.Noder(ctx, id)
 }
 
 // Nodes is the resolver for the nodes field.
 func (r *queryResolver) Nodes(ctx context.Context, ids []int) ([]ent.Noder, error) {
+	log := logger.ForContext(ctx)
+	log.Info("Resolving Node", zap.Ints("nodeIDs", ids))
 	return r.Client.Noders(ctx, ids)
 }
 

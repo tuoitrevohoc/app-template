@@ -10,6 +10,7 @@ import (
 	"github.com/tuoitrevohoc/app-template/api/app/bootstrap"
 	"github.com/tuoitrevohoc/app-template/api/app/config"
 	"github.com/tuoitrevohoc/app-template/api/app/resolvers"
+	"github.com/tuoitrevohoc/app-template/api/pkg/logger"
 )
 
 // Injectors from wire.go:
@@ -25,6 +26,11 @@ func CreateServer() (*Server, error) {
 	}
 	resolver := resolvers.NewResolver(client)
 	executableSchema := bootstrap.NewSchema(resolver)
-	server := NewServer(executableSchema, configurations)
+	zapLogger, err := logger.NewLogger()
+	if err != nil {
+		return nil, err
+	}
+	middleWare := logger.NewMiddleWare(zapLogger)
+	server := NewServer(executableSchema, configurations, middleWare)
 	return server, nil
 }

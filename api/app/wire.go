@@ -8,6 +8,7 @@ import (
 	"github.com/tuoitrevohoc/app-template/api/app/config"
 	"github.com/tuoitrevohoc/app-template/api/app/bootstrap"
 	"github.com/tuoitrevohoc/app-template/api/app/resolvers"
+	"github.com/tuoitrevohoc/app-template/api/pkg/logger"
 )
 
 func CreateServer() (*Server, error) {
@@ -16,6 +17,8 @@ func CreateServer() (*Server, error) {
 		bootstrap.NewSchema,
 		bootstrap.NewEntClient,
 		resolvers.NewResolver,
+		logger.NewLogger,
+		logger.NewMiddleWare,
 		NewServer,
 	)
 

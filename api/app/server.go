@@ -10,16 +10,20 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/go-chi/chi"
 	"github.com/tuoitrevohoc/app-template/api/app/config"
+	"github.com/tuoitrevohoc/app-template/api/pkg/logger"
 )
 
 type Server struct {
 	schema graphql.ExecutableSchema
 	config config.Configurations
+	loggerMiddleWare *logger.MiddleWare
 }
 
 func (s *Server) Start() error {
 	srv := handler.NewDefaultServer(s.schema)
 	router := chi.NewRouter()
+
+	router.Use(s.loggerMiddleWare.GetMiddleWare())
 
 	router.Handle("/graphql", playground.Handler("GraphQL Playground", "/graphql/query"))
 	router.Handle("/graphql/query", srv)
@@ -29,9 +33,14 @@ func (s *Server) Start() error {
 	return http.ListenAndServe(fmt.Sprintf(":%d", s.config.Port), router)
 }
 
-func NewServer(schema graphql.ExecutableSchema, config config.Configurations) *Server {
+func NewServer(
+	schema graphql.ExecutableSchema,
+	config config.Configurations,
+	loggerMiddleWare *logger.MiddleWare,
+) *Server {
 	return &Server{
 		schema: schema,
 		config: config,
+		loggerMiddleWare: loggerMiddleWare,
 	}
 }
