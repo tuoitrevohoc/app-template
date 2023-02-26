@@ -22,8 +22,8 @@ type RoleCreate struct {
 }
 
 // SetName sets the "name" field.
-func (rc *RoleCreate) SetName(s string) *RoleCreate {
-	rc.mutation.SetName(s)
+func (rc *RoleCreate) SetName(r role.Name) *RoleCreate {
+	rc.mutation.SetName(r)
 	return rc
 }
 
@@ -100,6 +100,11 @@ func (rc *RoleCreate) check() error {
 	if _, ok := rc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Role.name"`)}
 	}
+	if v, ok := rc.mutation.Name(); ok {
+		if err := role.NameValidator(v); err != nil {
+			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Role.name": %w`, err)}
+		}
+	}
 	if _, ok := rc.mutation.Description(); !ok {
 		return &ValidationError{Name: "description", err: errors.New(`ent: missing required field "Role.description"`)}
 	}
@@ -136,7 +141,7 @@ func (rc *RoleCreate) createSpec() (*Role, *sqlgraph.CreateSpec) {
 		}
 	)
 	if value, ok := rc.mutation.Name(); ok {
-		_spec.SetField(role.FieldName, field.TypeString, value)
+		_spec.SetField(role.FieldName, field.TypeEnum, value)
 		_node.Name = value
 	}
 	if value, ok := rc.mutation.Description(); ok {

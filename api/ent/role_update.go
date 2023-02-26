@@ -30,8 +30,8 @@ func (ru *RoleUpdate) Where(ps ...predicate.Role) *RoleUpdate {
 }
 
 // SetName sets the "name" field.
-func (ru *RoleUpdate) SetName(s string) *RoleUpdate {
-	ru.mutation.SetName(s)
+func (ru *RoleUpdate) SetName(r role.Name) *RoleUpdate {
+	ru.mutation.SetName(r)
 	return ru
 }
 
@@ -145,7 +145,20 @@ func (ru *RoleUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (ru *RoleUpdate) check() error {
+	if v, ok := ru.mutation.Name(); ok {
+		if err := role.NameValidator(v); err != nil {
+			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Role.name": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (ru *RoleUpdate) sqlSave(ctx context.Context) (n int, err error) {
+	if err := ru.check(); err != nil {
+		return n, err
+	}
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
 			Table:   role.Table,
@@ -164,7 +177,7 @@ func (ru *RoleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 	}
 	if value, ok := ru.mutation.Name(); ok {
-		_spec.SetField(role.FieldName, field.TypeString, value)
+		_spec.SetField(role.FieldName, field.TypeEnum, value)
 	}
 	if value, ok := ru.mutation.Description(); ok {
 		_spec.SetField(role.FieldDescription, field.TypeString, value)
@@ -298,8 +311,8 @@ type RoleUpdateOne struct {
 }
 
 // SetName sets the "name" field.
-func (ruo *RoleUpdateOne) SetName(s string) *RoleUpdateOne {
-	ruo.mutation.SetName(s)
+func (ruo *RoleUpdateOne) SetName(r role.Name) *RoleUpdateOne {
+	ruo.mutation.SetName(r)
 	return ruo
 }
 
@@ -420,7 +433,20 @@ func (ruo *RoleUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (ruo *RoleUpdateOne) check() error {
+	if v, ok := ruo.mutation.Name(); ok {
+		if err := role.NameValidator(v); err != nil {
+			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Role.name": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (ruo *RoleUpdateOne) sqlSave(ctx context.Context) (_node *Role, err error) {
+	if err := ruo.check(); err != nil {
+		return _node, err
+	}
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
 			Table:   role.Table,
@@ -456,7 +482,7 @@ func (ruo *RoleUpdateOne) sqlSave(ctx context.Context) (_node *Role, err error) 
 		}
 	}
 	if value, ok := ruo.mutation.Name(); ok {
-		_spec.SetField(role.FieldName, field.TypeString, value)
+		_spec.SetField(role.FieldName, field.TypeEnum, value)
 	}
 	if value, ok := ruo.mutation.Description(); ok {
 		_spec.SetField(role.FieldDescription, field.TypeString, value)

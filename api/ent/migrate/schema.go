@@ -36,7 +36,7 @@ var (
 	// RolesColumns holds the columns for the "roles" table.
 	RolesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "name", Type: field.TypeString},
+		{Name: "name", Type: field.TypeEnum, Enums: []string{"User", "Administrator"}},
 		{Name: "description", Type: field.TypeString},
 	}
 	// RolesTable holds the schema information for the "roles" table.
@@ -48,7 +48,7 @@ var (
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "username", Type: field.TypeString},
+		{Name: "username", Type: field.TypeString, Unique: true},
 		{Name: "password", Type: field.TypeString},
 		{Name: "user_role", Type: field.TypeInt, Nullable: true},
 	}

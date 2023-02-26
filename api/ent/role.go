@@ -16,7 +16,7 @@ type Role struct {
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
 	// Name of the role
-	Name string `json:"name,omitempty"`
+	Name role.Name `json:"name,omitempty"`
 	// Description holds the value of the "description" field.
 	Description string `json:"description,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -92,7 +92,7 @@ func (r *Role) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				r.Name = value.String
+				r.Name = role.Name(value.String)
 			}
 		case role.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -139,7 +139,7 @@ func (r *Role) String() string {
 	builder.WriteString("Role(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", r.ID))
 	builder.WriteString("name=")
-	builder.WriteString(r.Name)
+	builder.WriteString(fmt.Sprintf("%v", r.Name))
 	builder.WriteString(", ")
 	builder.WriteString("description=")
 	builder.WriteString(r.Description)

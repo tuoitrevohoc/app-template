@@ -336,7 +336,7 @@ func (rq *RoleQuery) WithPermissions(opts ...func(*PermissionQuery)) *RoleQuery 
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		Name role.Name `json:"name,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
@@ -359,7 +359,7 @@ func (rq *RoleQuery) GroupBy(field string, fields ...string) *RoleGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		Name role.Name `json:"name,omitempty"`
 //	}
 //
 //	client.Role.Query().

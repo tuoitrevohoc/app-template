@@ -6,17 +6,68 @@ package resolvers
 
 import (
 	"context"
-	"fmt"
 
+	"github.com/tuoitrevohoc/app-template/api/app/models"
 	"github.com/tuoitrevohoc/app-template/api/ent"
+	"github.com/tuoitrevohoc/app-template/api/ent/user"
+	"github.com/tuoitrevohoc/app-template/api/pkg/logger"
+	"github.com/vektah/gqlparser/v2/gqlerror"
+	"go.uber.org/zap"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Login is the resolver for the login field.
 func (r *mutationResolver) Login(ctx context.Context, username string, password string) (*ent.User, error) {
-	panic(fmt.Errorf("not implemented: Login - login"))
+	log := logger.ForContext(ctx)
+
+	user, err := r.Client.User.Query().Where(
+		user.UsernameEQ(username),
+	).First(ctx)
+
+	if err != nil {
+		log.Info("No matching user", zap.Error(err))
+		return nil, gqlerror.Errorf("No matching user")
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+
+	if err != nil {
+		log.Info("Password doesn't match for user", zap.String("username", username))
+	}
+
+	return user, nil
 }
 
 // Register is the resolver for the register field.
-func (r *mutationResolver) Register(ctx context.Context, username string, password string) (*ent.User, error) {
-	panic(fmt.Errorf("not implemented: Register - register"))
+func (r *mutationResolver) Register(ctx context.Context, input models.RegisterInput) (*ent.User, error) {
+	log := logger.ForContext(ctx)
+
+	passwordHash, err := bcrypt.GenerateFromPassword([]byte(input.Password), defaultCost)
+
+	if err != nil {
+		log.Error("Error hashing password", zap.Error(err))
+		return nil, gqlerror.Errorf("Some error happened")
+	}
+
+	user, err := r.Client.User.Create().SetInput(
+		ent.CreateUserInput{
+			Username: input.Username,
+			Password: string(passwordHash),
+		},
+	).Save(ctx)
+
+	if err != nil {
+		log.Error("Couldn't save user", zap.Error(err))
+		return nil, gqlerror.Errorf("Couldn't save user")
+	}
+
+	return user, nil
 }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//     it when you're done.
+//   - You have helper methods in this file. Move them out to keep these resolver files clean.
+const defaultCost = 10

@@ -12,6 +12,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
+	"github.com/tuoitrevohoc/app-template/api/ent/role"
 	"github.com/vektah/gqlparser/v2/ast"
 )
 
@@ -1820,9 +1821,9 @@ func (ec *executionContext) _Role_name(ctx context.Context, field graphql.Collec
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(role.Name)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNRoleName2githubᚗcomᚋtuoitrevohocᚋappᚑtemplateᚋapiᚋentᚋroleᚐName(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Role_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1832,7 +1833,7 @@ func (ec *executionContext) fieldContext_Role_name(ctx context.Context, field gr
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type RoleName does not have child fields")
 		},
 	}
 	return fc, nil
@@ -2713,7 +2714,7 @@ func (ec *executionContext) unmarshalInputCreateRoleInput(ctx context.Context, o
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
-			it.Name, err = ec.unmarshalNString2string(ctx, v)
+			it.Name, err = ec.unmarshalNRoleName2githubᚗcomᚋtuoitrevohocᚋappᚑtemplateᚋapiᚋentᚋroleᚐName(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -3689,6 +3690,16 @@ func (ec *executionContext) marshalNRoleConnection2ᚖgithubᚗcomᚋtuoitrevoho
 		return graphql.Null
 	}
 	return ec._RoleConnection(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNRoleName2githubᚗcomᚋtuoitrevohocᚋappᚑtemplateᚋapiᚋentᚋroleᚐName(ctx context.Context, v interface{}) (role.Name, error) {
+	var res role.Name
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNRoleName2githubᚗcomᚋtuoitrevohocᚋappᚑtemplateᚋapiᚋentᚋroleᚐName(ctx context.Context, sel ast.SelectionSet, v role.Name) graphql.Marshaler {
+	return v
 }
 
 func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋtuoitrevohocᚋappᚑtemplateᚋapiᚋentᚐUser(ctx context.Context, sel ast.SelectionSet, v *User) graphql.Marshaler {

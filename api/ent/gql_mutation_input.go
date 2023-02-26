@@ -2,6 +2,10 @@
 
 package ent
 
+import (
+	"github.com/tuoitrevohoc/app-template/api/ent/role"
+)
+
 // CreateInvoiceInput represents a mutation input for creating invoices.
 type CreateInvoiceInput struct {
 	Title        string
@@ -46,7 +50,7 @@ func (c *PermissionCreate) SetInput(i CreatePermissionInput) *PermissionCreate {
 
 // CreateRoleInput represents a mutation input for creating roles.
 type CreateRoleInput struct {
-	Name          string
+	Name          role.Name
 	Description   string
 	UserIDs       []int
 	PermissionIDs []int

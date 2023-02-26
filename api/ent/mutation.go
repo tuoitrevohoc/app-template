@@ -946,7 +946,7 @@ type RoleMutation struct {
 	op                 Op
 	typ                string
 	id                 *int
-	name               *string
+	name               *role.Name
 	description        *string
 	clearedFields      map[string]struct{}
 	users              map[int]struct{}
@@ -1059,12 +1059,12 @@ func (m *RoleMutation) IDs(ctx context.Context) ([]int, error) {
 }
 
 // SetName sets the "name" field.
-func (m *RoleMutation) SetName(s string) {
-	m.name = &s
+func (m *RoleMutation) SetName(r role.Name) {
+	m.name = &r
 }
 
 // Name returns the value of the "name" field in the mutation.
-func (m *RoleMutation) Name() (r string, exists bool) {
+func (m *RoleMutation) Name() (r role.Name, exists bool) {
 	v := m.name
 	if v == nil {
 		return
@@ -1075,7 +1075,7 @@ func (m *RoleMutation) Name() (r string, exists bool) {
 // OldName returns the old "name" field's value of the Role entity.
 // If the Role object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *RoleMutation) OldName(ctx context.Context) (v string, err error) {
+func (m *RoleMutation) OldName(ctx context.Context) (v role.Name, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldName is only allowed on UpdateOne operations")
 	}
@@ -1314,7 +1314,7 @@ func (m *RoleMutation) OldField(ctx context.Context, name string) (ent.Value, er
 func (m *RoleMutation) SetField(name string, value ent.Value) error {
 	switch name {
 	case role.FieldName:
-		v, ok := value.(string)
+		v, ok := value.(role.Name)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

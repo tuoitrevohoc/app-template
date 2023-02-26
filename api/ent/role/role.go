@@ -2,6 +2,12 @@
 
 package role
 
+import (
+	"fmt"
+	"io"
+	"strconv"
+)
+
 const (
 	// Label holds the string label denoting the role type in the database.
 	Label = "role"
@@ -52,4 +58,45 @@ func ValidColumn(column string) bool {
 		}
 	}
 	return false
+}
+
+// Name defines the type for the "name" enum field.
+type Name string
+
+// Name values.
+const (
+	NameUser          Name = "User"
+	NameAdministrator Name = "Administrator"
+)
+
+func (n Name) String() string {
+	return string(n)
+}
+
+// NameValidator is a validator for the "name" field enum values. It is called by the builders before save.
+func NameValidator(n Name) error {
+	switch n {
+	case NameUser, NameAdministrator:
+		return nil
+	default:
+		return fmt.Errorf("role: invalid enum value for name field: %q", n)
+	}
+}
+
+// MarshalGQL implements graphql.Marshaler interface.
+func (e Name) MarshalGQL(w io.Writer) {
+	io.WriteString(w, strconv.Quote(e.String()))
+}
+
+// UnmarshalGQL implements graphql.Unmarshaler interface.
+func (e *Name) UnmarshalGQL(val interface{}) error {
+	str, ok := val.(string)
+	if !ok {
+		return fmt.Errorf("enum %T must be a string", val)
+	}
+	*e = Name(str)
+	if err := NameValidator(*e); err != nil {
+		return fmt.Errorf("%s is not a valid Name", str)
+	}
+	return nil
 }

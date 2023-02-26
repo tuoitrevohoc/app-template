@@ -7,6 +7,10 @@ exec:
   dir: ent
   package: ent
 
+model:
+  filename: app/models/models_gen.go
+  package: models
+
 # resolver reports where the resolver implementations go.
 resolver:
   layout: follow-schema

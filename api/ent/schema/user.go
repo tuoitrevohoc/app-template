@@ -16,7 +16,7 @@ type User struct {
 // Fields of the Invoice.
 func (User) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("username").Comment("The username"),
+		field.String("username").Comment("The username").Unique(),
 		field.String("password").Comment("Hashed password").Sensitive(),
 	}
 }

@@ -16,7 +16,11 @@ type Role struct {
 // Fields of the Invoice.
 func (Role) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("name").Comment("Name of the role"),
+		field.Enum("name").
+			Values(
+				"User",
+				"Administrator",
+			),
 		field.String("description"),
 	}
 }

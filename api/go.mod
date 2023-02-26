@@ -15,6 +15,7 @@ require (
 	github.com/vektah/gqlparser/v2 v2.5.1
 	github.com/vmihailenco/msgpack/v5 v5.0.0-beta.9
 	go.uber.org/zap v1.24.0
+	golang.org/x/crypto v0.6.0
 	golang.org/x/sync v0.1.0
 )
 
@@ -26,7 +27,6 @@ require (
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/go-openapi/inflect v0.19.0 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
-	github.com/google/subcommands v1.0.1 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
@@ -36,7 +36,6 @@ require (
 	github.com/mitchellh/go-wordwrap v0.0.0-20150314170334-ad45545899c7 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
-	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/spf13/afero v1.9.3 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
