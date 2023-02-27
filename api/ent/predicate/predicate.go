@@ -9,6 +9,9 @@ import (
 // Invoice is the predicate function for invoice builders.
 type Invoice func(*sql.Selector)
 
+// Migration is the predicate function for migration builders.
+type Migration func(*sql.Selector)
+
 // Permission is the predicate function for permission builders.
 type Permission func(*sql.Selector)
 

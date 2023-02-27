@@ -11,6 +11,7 @@ import (
 	"github.com/tuoitrevohoc/app-template/api/ent/migrate"
 
 	"github.com/tuoitrevohoc/app-template/api/ent/invoice"
+	"github.com/tuoitrevohoc/app-template/api/ent/migration"
 	"github.com/tuoitrevohoc/app-template/api/ent/permission"
 	"github.com/tuoitrevohoc/app-template/api/ent/role"
 	"github.com/tuoitrevohoc/app-template/api/ent/user"
@@ -27,6 +28,8 @@ type Client struct {
 	Schema *migrate.Schema
 	// Invoice is the client for interacting with the Invoice builders.
 	Invoice *InvoiceClient
+	// Migration is the client for interacting with the Migration builders.
+	Migration *MigrationClient
 	// Permission is the client for interacting with the Permission builders.
 	Permission *PermissionClient
 	// Role is the client for interacting with the Role builders.
@@ -49,6 +52,7 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Invoice = NewInvoiceClient(c.config)
+	c.Migration = NewMigrationClient(c.config)
 	c.Permission = NewPermissionClient(c.config)
 	c.Role = NewRoleClient(c.config)
 	c.User = NewUserClient(c.config)
@@ -86,6 +90,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		ctx:        ctx,
 		config:     cfg,
 		Invoice:    NewInvoiceClient(cfg),
+		Migration:  NewMigrationClient(cfg),
 		Permission: NewPermissionClient(cfg),
 		Role:       NewRoleClient(cfg),
 		User:       NewUserClient(cfg),
@@ -109,6 +114,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		ctx:        ctx,
 		config:     cfg,
 		Invoice:    NewInvoiceClient(cfg),
+		Migration:  NewMigrationClient(cfg),
 		Permission: NewPermissionClient(cfg),
 		Role:       NewRoleClient(cfg),
 		User:       NewUserClient(cfg),
@@ -141,6 +147,7 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	c.Invoice.Use(hooks...)
+	c.Migration.Use(hooks...)
 	c.Permission.Use(hooks...)
 	c.Role.Use(hooks...)
 	c.User.Use(hooks...)
@@ -150,6 +157,7 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	c.Invoice.Intercept(interceptors...)
+	c.Migration.Intercept(interceptors...)
 	c.Permission.Intercept(interceptors...)
 	c.Role.Intercept(interceptors...)
 	c.User.Intercept(interceptors...)
@@ -160,6 +168,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
 	case *InvoiceMutation:
 		return c.Invoice.mutate(ctx, m)
+	case *MigrationMutation:
+		return c.Migration.mutate(ctx, m)
 	case *PermissionMutation:
 		return c.Permission.mutate(ctx, m)
 	case *RoleMutation:
@@ -286,6 +296,124 @@ func (c *InvoiceClient) mutate(ctx context.Context, m *InvoiceMutation) (Value, 
 		return (&InvoiceDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown Invoice mutation op: %q", m.Op())
+	}
+}
+
+// MigrationClient is a client for the Migration schema.
+type MigrationClient struct {
+	config
+}
+
+// NewMigrationClient returns a client for the Migration from the given config.
+func NewMigrationClient(c config) *MigrationClient {
+	return &MigrationClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `migration.Hooks(f(g(h())))`.
+func (c *MigrationClient) Use(hooks ...Hook) {
+	c.hooks.Migration = append(c.hooks.Migration, hooks...)
+}
+
+// Use adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `migration.Intercept(f(g(h())))`.
+func (c *MigrationClient) Intercept(interceptors ...Interceptor) {
+	c.inters.Migration = append(c.inters.Migration, interceptors...)
+}
+
+// Create returns a builder for creating a Migration entity.
+func (c *MigrationClient) Create() *MigrationCreate {
+	mutation := newMigrationMutation(c.config, OpCreate)
+	return &MigrationCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Migration entities.
+func (c *MigrationClient) CreateBulk(builders ...*MigrationCreate) *MigrationCreateBulk {
+	return &MigrationCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Migration.
+func (c *MigrationClient) Update() *MigrationUpdate {
+	mutation := newMigrationMutation(c.config, OpUpdate)
+	return &MigrationUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *MigrationClient) UpdateOne(m *Migration) *MigrationUpdateOne {
+	mutation := newMigrationMutation(c.config, OpUpdateOne, withMigration(m))
+	return &MigrationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *MigrationClient) UpdateOneID(id int) *MigrationUpdateOne {
+	mutation := newMigrationMutation(c.config, OpUpdateOne, withMigrationID(id))
+	return &MigrationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Migration.
+func (c *MigrationClient) Delete() *MigrationDelete {
+	mutation := newMigrationMutation(c.config, OpDelete)
+	return &MigrationDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *MigrationClient) DeleteOne(m *Migration) *MigrationDeleteOne {
+	return c.DeleteOneID(m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *MigrationClient) DeleteOneID(id int) *MigrationDeleteOne {
+	builder := c.Delete().Where(migration.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &MigrationDeleteOne{builder}
+}
+
+// Query returns a query builder for Migration.
+func (c *MigrationClient) Query() *MigrationQuery {
+	return &MigrationQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeMigration},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a Migration entity by its id.
+func (c *MigrationClient) Get(ctx context.Context, id int) (*Migration, error) {
+	return c.Query().Where(migration.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *MigrationClient) GetX(ctx context.Context, id int) *Migration {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *MigrationClient) Hooks() []Hook {
+	return c.hooks.Migration
+}
+
+// Interceptors returns the client interceptors.
+func (c *MigrationClient) Interceptors() []Interceptor {
+	return c.inters.Migration
+}
+
+func (c *MigrationClient) mutate(ctx context.Context, m *MigrationMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&MigrationCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&MigrationUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&MigrationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&MigrationDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown Migration mutation op: %q", m.Op())
 	}
 }
 

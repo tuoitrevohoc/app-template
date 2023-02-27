@@ -28,12 +28,14 @@ type config struct {
 type (
 	hooks struct {
 		Invoice    []ent.Hook
+		Migration  []ent.Hook
 		Permission []ent.Hook
 		Role       []ent.Hook
 		User       []ent.Hook
 	}
 	inters struct {
 		Invoice    []ent.Interceptor
+		Migration  []ent.Interceptor
 		Permission []ent.Interceptor
 		Role       []ent.Interceptor
 		User       []ent.Interceptor

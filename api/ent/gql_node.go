@@ -15,6 +15,7 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/hashicorp/go-multierror"
 	"github.com/tuoitrevohoc/app-template/api/ent/invoice"
+	"github.com/tuoitrevohoc/app-template/api/ent/migration"
 	"github.com/tuoitrevohoc/app-template/api/ent/permission"
 	"github.com/tuoitrevohoc/app-template/api/ent/role"
 	"github.com/tuoitrevohoc/app-template/api/ent/user"
@@ -28,6 +29,9 @@ type Noder interface {
 
 // IsNode implements the Node interface check for GQLGen.
 func (n *Invoice) IsNode() {}
+
+// IsNode implements the Node interface check for GQLGen.
+func (n *Migration) IsNode() {}
 
 // IsNode implements the Node interface check for GQLGen.
 func (n *Permission) IsNode() {}
@@ -100,6 +104,18 @@ func (c *Client) noder(ctx context.Context, table string, id int) (Noder, error)
 		query := c.Invoice.Query().
 			Where(invoice.ID(id))
 		query, err := query.CollectFields(ctx, "Invoice")
+		if err != nil {
+			return nil, err
+		}
+		n, err := query.Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		return n, nil
+	case migration.Table:
+		query := c.Migration.Query().
+			Where(migration.ID(id))
+		query, err := query.CollectFields(ctx, "Migration")
 		if err != nil {
 			return nil, err
 		}
@@ -221,6 +237,22 @@ func (c *Client) noders(ctx context.Context, table string, ids []int) ([]Noder, 
 		query := c.Invoice.Query().
 			Where(invoice.IDIn(ids...))
 		query, err := query.CollectFields(ctx, "Invoice")
+		if err != nil {
+			return nil, err
+		}
+		nodes, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, node := range nodes {
+			for _, noder := range idmap[node.ID] {
+				*noder = node
+			}
+		}
+	case migration.Table:
+		query := c.Migration.Query().
+			Where(migration.IDIn(ids...))
+		query, err := query.CollectFields(ctx, "Migration")
 		if err != nil {
 			return nil, err
 		}

@@ -8,6 +8,8 @@ package app
 
 import (
 	"github.com/tuoitrevohoc/app-template/api/app/bootstrap"
+	"github.com/tuoitrevohoc/app-template/api/app/bootstrap/data"
+	"github.com/tuoitrevohoc/app-template/api/app/bootstrap/data/migrations"
 	"github.com/tuoitrevohoc/app-template/api/app/config"
 	"github.com/tuoitrevohoc/app-template/api/app/resolvers"
 	"github.com/tuoitrevohoc/app-template/api/pkg/logger"
@@ -20,16 +22,18 @@ func CreateServer() (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	client, err := bootstrap.NewEntClient(configurations)
+	zapLogger, err := logger.NewLogger()
+	if err != nil {
+		return nil, err
+	}
+	v := migrations.AllMigrations()
+	migrator := data.NewMigrator(zapLogger, v)
+	client, err := bootstrap.NewEntClient(configurations, migrator)
 	if err != nil {
 		return nil, err
 	}
 	resolver := resolvers.NewResolver(client)
 	executableSchema := bootstrap.NewSchema(resolver)
-	zapLogger, err := logger.NewLogger()
-	if err != nil {
-		return nil, err
-	}
 	middleWare := logger.NewMiddleWare(zapLogger)
 	server := NewServer(executableSchema, configurations, middleWare)
 	return server, nil

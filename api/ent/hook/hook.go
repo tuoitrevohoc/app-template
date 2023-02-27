@@ -21,6 +21,18 @@ func (f InvoiceFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, err
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.InvoiceMutation", m)
 }
 
+// The MigrationFunc type is an adapter to allow the use of ordinary
+// function as Migration mutator.
+type MigrationFunc func(context.Context, *ent.MigrationMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f MigrationFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.MigrationMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.MigrationMutation", m)
+}
+
 // The PermissionFunc type is an adapter to allow the use of ordinary
 // function as Permission mutator.
 type PermissionFunc func(context.Context, *ent.PermissionMutation) (ent.Value, error)

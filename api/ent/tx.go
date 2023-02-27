@@ -14,6 +14,8 @@ type Tx struct {
 	config
 	// Invoice is the client for interacting with the Invoice builders.
 	Invoice *InvoiceClient
+	// Migration is the client for interacting with the Migration builders.
+	Migration *MigrationClient
 	// Permission is the client for interacting with the Permission builders.
 	Permission *PermissionClient
 	// Role is the client for interacting with the Role builders.
@@ -152,6 +154,7 @@ func (tx *Tx) Client() *Client {
 
 func (tx *Tx) init() {
 	tx.Invoice = NewInvoiceClient(tx.config)
+	tx.Migration = NewMigrationClient(tx.config)
 	tx.Permission = NewPermissionClient(tx.config)
 	tx.Role = NewRoleClient(tx.config)
 	tx.User = NewUserClient(tx.config)

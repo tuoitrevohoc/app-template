@@ -15,7 +15,7 @@ type Role struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// Name of the role
+	// Name holds the value of the "name" field.
 	Name role.Name `json:"name,omitempty"`
 	// Description holds the value of the "description" field.
 	Description string `json:"description,omitempty"`

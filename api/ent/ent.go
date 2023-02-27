@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/tuoitrevohoc/app-template/api/ent/invoice"
+	"github.com/tuoitrevohoc/app-template/api/ent/migration"
 	"github.com/tuoitrevohoc/app-template/api/ent/permission"
 	"github.com/tuoitrevohoc/app-template/api/ent/role"
 	"github.com/tuoitrevohoc/app-template/api/ent/user"
@@ -43,6 +44,7 @@ type OrderFunc func(*sql.Selector)
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
 		invoice.Table:    invoice.ValidColumn,
+		migration.Table:  migration.ValidColumn,
 		permission.Table: permission.ValidColumn,
 		role.Table:       role.ValidColumn,
 		user.Table:       user.ValidColumn,

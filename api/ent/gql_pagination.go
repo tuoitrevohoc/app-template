@@ -15,6 +15,7 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/errcode"
 	"github.com/tuoitrevohoc/app-template/api/ent/invoice"
+	"github.com/tuoitrevohoc/app-template/api/ent/migration"
 	"github.com/tuoitrevohoc/app-template/api/ent/permission"
 	"github.com/tuoitrevohoc/app-template/api/ent/role"
 	"github.com/tuoitrevohoc/app-template/api/ent/user"
@@ -472,6 +473,237 @@ func (i *Invoice) ToEdge(order *InvoiceOrder) *InvoiceEdge {
 	return &InvoiceEdge{
 		Node:   i,
 		Cursor: order.Field.toCursor(i),
+	}
+}
+
+// MigrationEdge is the edge representation of Migration.
+type MigrationEdge struct {
+	Node   *Migration `json:"node"`
+	Cursor Cursor     `json:"cursor"`
+}
+
+// MigrationConnection is the connection containing edges to Migration.
+type MigrationConnection struct {
+	Edges      []*MigrationEdge `json:"edges"`
+	PageInfo   PageInfo         `json:"pageInfo"`
+	TotalCount int              `json:"totalCount"`
+}
+
+func (c *MigrationConnection) build(nodes []*Migration, pager *migrationPager, after *Cursor, first *int, before *Cursor, last *int) {
+	c.PageInfo.HasNextPage = before != nil
+	c.PageInfo.HasPreviousPage = after != nil
+	if first != nil && *first+1 == len(nodes) {
+		c.PageInfo.HasNextPage = true
+		nodes = nodes[:len(nodes)-1]
+	} else if last != nil && *last+1 == len(nodes) {
+		c.PageInfo.HasPreviousPage = true
+		nodes = nodes[:len(nodes)-1]
+	}
+	var nodeAt func(int) *Migration
+	if last != nil {
+		n := len(nodes) - 1
+		nodeAt = func(i int) *Migration {
+			return nodes[n-i]
+		}
+	} else {
+		nodeAt = func(i int) *Migration {
+			return nodes[i]
+		}
+	}
+	c.Edges = make([]*MigrationEdge, len(nodes))
+	for i := range nodes {
+		node := nodeAt(i)
+		c.Edges[i] = &MigrationEdge{
+			Node:   node,
+			Cursor: pager.toCursor(node),
+		}
+	}
+	if l := len(c.Edges); l > 0 {
+		c.PageInfo.StartCursor = &c.Edges[0].Cursor
+		c.PageInfo.EndCursor = &c.Edges[l-1].Cursor
+	}
+	if c.TotalCount == 0 {
+		c.TotalCount = len(nodes)
+	}
+}
+
+// MigrationPaginateOption enables pagination customization.
+type MigrationPaginateOption func(*migrationPager) error
+
+// WithMigrationOrder configures pagination ordering.
+func WithMigrationOrder(order *MigrationOrder) MigrationPaginateOption {
+	if order == nil {
+		order = DefaultMigrationOrder
+	}
+	o := *order
+	return func(pager *migrationPager) error {
+		if err := o.Direction.Validate(); err != nil {
+			return err
+		}
+		if o.Field == nil {
+			o.Field = DefaultMigrationOrder.Field
+		}
+		pager.order = &o
+		return nil
+	}
+}
+
+// WithMigrationFilter configures pagination filter.
+func WithMigrationFilter(filter func(*MigrationQuery) (*MigrationQuery, error)) MigrationPaginateOption {
+	return func(pager *migrationPager) error {
+		if filter == nil {
+			return errors.New("MigrationQuery filter cannot be nil")
+		}
+		pager.filter = filter
+		return nil
+	}
+}
+
+type migrationPager struct {
+	order  *MigrationOrder
+	filter func(*MigrationQuery) (*MigrationQuery, error)
+}
+
+func newMigrationPager(opts []MigrationPaginateOption) (*migrationPager, error) {
+	pager := &migrationPager{}
+	for _, opt := range opts {
+		if err := opt(pager); err != nil {
+			return nil, err
+		}
+	}
+	if pager.order == nil {
+		pager.order = DefaultMigrationOrder
+	}
+	return pager, nil
+}
+
+func (p *migrationPager) applyFilter(query *MigrationQuery) (*MigrationQuery, error) {
+	if p.filter != nil {
+		return p.filter(query)
+	}
+	return query, nil
+}
+
+func (p *migrationPager) toCursor(m *Migration) Cursor {
+	return p.order.Field.toCursor(m)
+}
+
+func (p *migrationPager) applyCursors(query *MigrationQuery, after, before *Cursor) *MigrationQuery {
+	for _, predicate := range cursorsToPredicates(
+		p.order.Direction, after, before,
+		p.order.Field.field, DefaultMigrationOrder.Field.field,
+	) {
+		query = query.Where(predicate)
+	}
+	return query
+}
+
+func (p *migrationPager) applyOrder(query *MigrationQuery, reverse bool) *MigrationQuery {
+	direction := p.order.Direction
+	if reverse {
+		direction = direction.reverse()
+	}
+	query = query.Order(direction.orderFunc(p.order.Field.field))
+	if p.order.Field != DefaultMigrationOrder.Field {
+		query = query.Order(direction.orderFunc(DefaultMigrationOrder.Field.field))
+	}
+	return query
+}
+
+func (p *migrationPager) orderExpr(reverse bool) sql.Querier {
+	direction := p.order.Direction
+	if reverse {
+		direction = direction.reverse()
+	}
+	return sql.ExprFunc(func(b *sql.Builder) {
+		b.Ident(p.order.Field.field).Pad().WriteString(string(direction))
+		if p.order.Field != DefaultMigrationOrder.Field {
+			b.Comma().Ident(DefaultMigrationOrder.Field.field).Pad().WriteString(string(direction))
+		}
+	})
+}
+
+// Paginate executes the query and returns a relay based cursor connection to Migration.
+func (m *MigrationQuery) Paginate(
+	ctx context.Context, after *Cursor, first *int,
+	before *Cursor, last *int, opts ...MigrationPaginateOption,
+) (*MigrationConnection, error) {
+	if err := validateFirstLast(first, last); err != nil {
+		return nil, err
+	}
+	pager, err := newMigrationPager(opts)
+	if err != nil {
+		return nil, err
+	}
+	if m, err = pager.applyFilter(m); err != nil {
+		return nil, err
+	}
+	conn := &MigrationConnection{Edges: []*MigrationEdge{}}
+	ignoredEdges := !hasCollectedField(ctx, edgesField)
+	if hasCollectedField(ctx, totalCountField) || hasCollectedField(ctx, pageInfoField) {
+		hasPagination := after != nil || first != nil || before != nil || last != nil
+		if hasPagination || ignoredEdges {
+			if conn.TotalCount, err = m.Clone().Count(ctx); err != nil {
+				return nil, err
+			}
+			conn.PageInfo.HasNextPage = first != nil && conn.TotalCount > 0
+			conn.PageInfo.HasPreviousPage = last != nil && conn.TotalCount > 0
+		}
+	}
+	if ignoredEdges || (first != nil && *first == 0) || (last != nil && *last == 0) {
+		return conn, nil
+	}
+
+	m = pager.applyCursors(m, after, before)
+	m = pager.applyOrder(m, last != nil)
+	if limit := paginateLimit(first, last); limit != 0 {
+		m.Limit(limit)
+	}
+	if field := collectedField(ctx, edgesField, nodeField); field != nil {
+		if err := m.collectField(ctx, graphql.GetOperationContext(ctx), *field, []string{edgesField, nodeField}); err != nil {
+			return nil, err
+		}
+	}
+
+	nodes, err := m.All(ctx)
+	if err != nil {
+		return nil, err
+	}
+	conn.build(nodes, pager, after, first, before, last)
+	return conn, nil
+}
+
+// MigrationOrderField defines the ordering field of Migration.
+type MigrationOrderField struct {
+	field    string
+	toCursor func(*Migration) Cursor
+}
+
+// MigrationOrder defines the ordering of Migration.
+type MigrationOrder struct {
+	Direction OrderDirection       `json:"direction"`
+	Field     *MigrationOrderField `json:"field"`
+}
+
+// DefaultMigrationOrder is the default ordering of Migration.
+var DefaultMigrationOrder = &MigrationOrder{
+	Direction: OrderDirectionAsc,
+	Field: &MigrationOrderField{
+		field: migration.FieldID,
+		toCursor: func(m *Migration) Cursor {
+			return Cursor{ID: m.ID}
+		},
+	},
+}
+
+// ToEdge converts Migration into MigrationEdge.
+func (m *Migration) ToEdge(order *MigrationOrder) *MigrationEdge {
+	if order == nil {
+		order = DefaultMigrationOrder
+	}
+	return &MigrationEdge{
+		Node:   m,
+		Cursor: order.Field.toCursor(m),
 	}
 }
 
