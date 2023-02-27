@@ -9,6 +9,7 @@ import (
 
 	"github.com/tuoitrevohoc/app-template/api/app/models"
 	"github.com/tuoitrevohoc/app-template/api/ent"
+	"github.com/tuoitrevohoc/app-template/api/ent/role"
 	"github.com/tuoitrevohoc/app-template/api/ent/user"
 	"github.com/tuoitrevohoc/app-template/api/pkg/logger"
 	"github.com/vektah/gqlparser/v2/gqlerror"
@@ -40,6 +41,7 @@ func (r *mutationResolver) Login(ctx context.Context, username string, password 
 
 // Register is the resolver for the register field.
 func (r *mutationResolver) Register(ctx context.Context, input models.RegisterInput) (*ent.User, error) {
+	const defaultCost = 10
 	log := logger.ForContext(ctx)
 
 	passwordHash, err := bcrypt.GenerateFromPassword([]byte(input.Password), defaultCost)
@@ -49,12 +51,23 @@ func (r *mutationResolver) Register(ctx context.Context, input models.RegisterIn
 		return nil, gqlerror.Errorf("Some error happened")
 	}
 
+	roleID, err := r.Client.Role.Query().Where(
+		role.NameEQ(role.NameUser),
+	).FirstID(ctx)
+
+	if err != nil {
+		log.Error("Can't get user role", zap.Error(err))
+		return nil, gqlerror.Errorf("Some error happened")
+	}
+
 	user, err := r.Client.User.Create().SetInput(
 		ent.CreateUserInput{
 			Username: input.Username,
 			Password: string(passwordHash),
 		},
-	).Save(ctx)
+	).
+	SetRoleID(roleID).
+	Save(ctx)
 
 	if err != nil {
 		log.Error("Couldn't save user", zap.Error(err))
@@ -64,10 +77,3 @@ func (r *mutationResolver) Register(ctx context.Context, input models.RegisterIn
 	return user, nil
 }
 
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//     it when you're done.
-//   - You have helper methods in this file. Move them out to keep these resolver files clean.
-const defaultCost = 10
