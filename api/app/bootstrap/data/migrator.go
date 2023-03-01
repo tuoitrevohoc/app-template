@@ -52,6 +52,7 @@ func (m *Migrator) Execute(ctx context.Context, client *ent.Client) error {
 
 			if err != nil {
 				migLog.Error("Error executing migration", zap.Error(err))
+				tx.Rollback()
 				return err
 			}
 
