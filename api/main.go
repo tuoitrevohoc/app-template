@@ -3,11 +3,11 @@ package main
 import (
 	"log"
 
-	"github.com/tuoitrevohoc/app-template/api/app"
+	"github.com/tuoitrevohoc/app-template/api/internal/server"
 )
 
 func main() {
-	server, err := app.CreateServer()
+	server, err := server.CreateServer()
 
 	if err != nil {
 		log.Fatal("Can't create server", err)
