@@ -22,7 +22,7 @@ docker compose up
 ```
 cd api
 go mod tidy
-go run main.go
+go run cmd/main.go
 ```
 
 2. Run Frontend
@@ -40,18 +40,18 @@ https://app-template.8doc.xyz/graphql
 
 ## Backend Development Guideline
 
-- Schema definition /api/ent/schema
-- GraphQL definition /api/app/schema
-- GraphQL resolvers /api/app/resolvers
+- Schema definition /api/schema/entity
+- GraphQL definition /api/schema/graphql
+- GraphQL resolvers /api/pkg/resolvers
 
 ### 1. Change the schema
 
-- Change schema in /api/ent/schema
+- Change schema in /api/schema/entity
 - Run `go generate`
 
 ### 2. Change GraphQL Schema
 
-- Change/add schema definition in /api/app/schema
+- Change/add schema definition in /api/schema/graphql
 
 Ex. In invoice.graphql, add:
 
