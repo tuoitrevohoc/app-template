@@ -1,3 +1,4 @@
 node_modules
 backend/__debug_bin
 backend/vendor
+.DS_Store
